@@ -1,0 +1,2 @@
+Total Inventory: 350
+Transaction History: 100,50,200
