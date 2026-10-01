@@ -1,3 +1,29 @@
+import os
+
+DATA_FILE = os.path.join("data", "inventory.txt")
+
+
+def load_inventory():
+    """Read saved total and history. Return (0, []) if no file exists."""
+    try:
+        with open(DATA_FILE, "r") as file:
+            lines = file.read().splitlines()
+    except FileNotFoundError:
+        print("No saved inventory found. Starting with an empty inventory.")
+        return 0, []
+
+    try:
+        total = int(lines[0].split(":", 1)[1].strip())
+        history_text = lines[1].split(":", 1)[1].strip()
+        history = [int(x) for x in history_text.split(",")] if history_text else []
+    except (IndexError, ValueError):
+        print("Inventory file is unreadable. Starting with an empty inventory.")
+        return 0, []
+
+    print(f"Loaded inventory: {total} units, {len(history)} past transactions.")
+    return total, history
+
+
 TAX_RATE = 0.10        # 10% tax per delivery
 STORAGE_LIMIT = 500    # overstock limit
  
@@ -41,7 +67,7 @@ def generate_report(total_units, failed_attempts, deliveries_processed, total_ta
 # ---------------- Main program ----------------
  
 # initialise inventory and counters to zero at the start
-inventory = 0
+inventory, transaction_history = load_inventory()
 total_units_processed = 0
 deliveries_processed = 0
 failed_entries = 0
