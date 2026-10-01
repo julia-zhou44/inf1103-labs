@@ -66,6 +66,12 @@ def get_product_name():
 
     return name.title()  # "mouse", "MOUSE", "mOuSe" all become "Mouse"
 
+def match_existing_name(name, history):
+    """Reuse a product's saved spelling, so 'usb cable' matches 'USB Cable'."""
+    for order in history:
+        if order[1].lower() == name.lower():
+            return order[1]
+    return name
 
 def get_valid_quantity():
     user_input = input("Enter Quantity: ").strip()
@@ -124,6 +130,7 @@ while True:
     elif product_name is None:  # name rejected
         failed_entries += 1
         continue
+    product_name = match_existing_name(product_name, transaction_history) 
 
     quantity = get_valid_quantity()
 
