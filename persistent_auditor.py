@@ -1,7 +1,10 @@
 import os
 
+TAX_RATE = 0.10        # 10% tax per delivery
+STORAGE_LIMIT = 500    # overstock limit
 DATA_FILE = os.path.join("data", "inventory.txt")
 
+#Functions
 
 def load_inventory():
     """Read saved total and history. Return (0, []) if no file exists."""
@@ -23,12 +26,7 @@ def load_inventory():
     print(f"Loaded inventory: {total} units, {len(history)} past transactions.")
     return total, history
 
-
-TAX_RATE = 0.10        # 10% tax per delivery
-STORAGE_LIMIT = 500    # overstock limit
  
- #Functions
-
 def get_valid_input():
     user_input = input("\nEnter Stock Quantity (or 'quit' to exit): ").strip()
  
@@ -64,7 +62,14 @@ def generate_report(total_units, failed_attempts, deliveries_processed, total_ta
     print(f"Total Tax: {total_tax:.2f}")
     print(f"Number of Failed/Rejected Entries: {failed_attempts}")
     print(f"Transaction History: {history}\n")
- 
+
+def save_inventory(total, history):
+    """Write final total and full transaction history to the inventory file."""
+    os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)  # create data/ if missing
+    with open(DATA_FILE, "w") as file:
+        file.write(f"Total Inventory: {total}\n")
+        file.write("Transaction History: " + ",".join(str(x) for x in history) + "\n")
+    print(f"Inventory saved to {DATA_FILE}")
  
 # ---------------- Main program ----------------
  
@@ -86,6 +91,11 @@ while True:
         failed_entries += 1
  
     else:
+        if inventory + response > STORAGE_LIMIT:  # overstock: reject this delivery
+            print(f"STOP! This delivery would exceed storage space. Current Inventory {inventory}\n")
+            failed_entries += 1
+            continue
+        
         # valid delivery: update total, calculate tax, update counters
         inventory = process_delivery(inventory, response)
         transaction_history.append(response)
@@ -103,6 +113,6 @@ while True:
  
         else:
             print(f"Registered. Tax for this delivery: {tax:.2f}. Current Inventory {inventory}")
- 
+
+save_inventory(inventory, transaction_history)
 generate_report(total_units_processed, failed_entries, deliveries_processed, total_tax, transaction_history)
- 
