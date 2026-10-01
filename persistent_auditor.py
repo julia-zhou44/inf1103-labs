@@ -56,12 +56,14 @@ def calculate_tax(amount): # tax
  
  
 # summary report
-def generate_report(total_units, failed_attempts, deliveries_processed, total_tax):
+
+def generate_report(total_units, failed_attempts, deliveries_processed, total_tax, history):
     print("\n--- Final Report ---")
     print(f"Total Deliveries Processed: {deliveries_processed}")
     print(f"Total Units Processed: {total_units}")
     print(f"Total Tax: {total_tax:.2f}")
-    print(f"Number of Failed/Rejected Entries: {failed_attempts}\n")
+    print(f"Number of Failed/Rejected Entries: {failed_attempts}")
+    print(f"Transaction History: {history}\n")
  
  
 # ---------------- Main program ----------------
@@ -86,7 +88,10 @@ while True:
     else:
         # valid delivery: update total, calculate tax, update counters
         inventory = process_delivery(inventory, response)
+        transaction_history.append(response)
         tax = calculate_tax(response)
+        
+        
  
         total_units_processed += response
         deliveries_processed += 1
@@ -99,5 +104,5 @@ while True:
         else:
             print(f"Registered. Tax for this delivery: {tax:.2f}. Current Inventory {inventory}")
  
-generate_report(total_units_processed, failed_entries, deliveries_processed, total_tax)
+generate_report(total_units_processed, failed_entries, deliveries_processed, total_tax, transaction_history)
  
