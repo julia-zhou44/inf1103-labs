@@ -1,4 +1,7 @@
-Total Inventory: 107
+Total Inventory: 235
 1001,Wireless Mouse,2
 1002,Keyboard,1
 1003,USB Cable,3
+1004,Wireless Mouse,88
+1005,Keyboard,18
+1006,USB Cable,22
