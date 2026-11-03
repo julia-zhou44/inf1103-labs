@@ -99,7 +99,7 @@ def search_product_menu(inventory):
     product.display_information()
     print(LINE)
 
-    # ---------------- Menu system ----------------
+# ---------------- Menu system ----------------
 
 def show_menu():
     print("\n---------- MENU ----------")
