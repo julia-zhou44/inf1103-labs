@@ -38,6 +38,4 @@ class Product:
                 "price": self.__price, "stock": self.__stock}
 
 
-p = Product("P001", "Laptop", 1200.00, 15)
-p.display_information()
-print(p.update_stock(-5))   # should print False
+
