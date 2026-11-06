@@ -1,8 +1,10 @@
+# file_handling.py
 import json
 import os
 
 from inventory import Inventory
-from product import Product
+from physical_product import PhysicalProduct
+from digital_product import DigitalProduct
 
 DATA_DIR = "data"
 DATA_FILE = os.path.join(DATA_DIR, "inventory.json")
@@ -29,9 +31,18 @@ def load_inventory():
 
     for item in data:
         try:
-            # turn each dictionary from the file into a Product object
-            product = Product(item["id"], item["name"], item["price"], item["stock"])
-        except (KeyError, TypeError):
+            # use the saved "type" to rebuild the correct subclass
+            product_type = item.get("type")
+            if product_type == "physical":
+                product = PhysicalProduct(item["id"], item["name"], item["price"],
+                                          item["stock"], item["weight"])
+            elif product_type == "digital":
+                product = DigitalProduct(item["id"], item["name"], item["price"],
+                                         item["stock"], item["download_size"])
+            else:
+                print(f"Skipping a product with unknown type: {product_type}")
+                continue
+        except (KeyError, TypeError, AttributeError):
             print("Skipping a product with missing details.")
             continue
         inventory.add_product(product)
