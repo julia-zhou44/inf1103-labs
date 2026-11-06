@@ -3,30 +3,56 @@
         "id": "P001",
         "name": "Laptop",
         "price": 1200.0,
-        "stock": 15
+        "stock": 15,
+        "type": "physical",
+        "weight": 2.5
     },
     {
         "id": "P002",
         "name": "Mouse",
         "price": 25.5,
-        "stock": 50
+        "stock": 50,
+        "type": "physical",
+        "weight": 0.1
     },
     {
         "id": "P003",
         "name": "Keyboard",
         "price": 45.0,
-        "stock": 25
+        "stock": 25,
+        "type": "physical",
+        "weight": 0.8
     },
     {
         "id": "P004",
         "name": "Monitor",
         "price": 299.99,
-        "stock": 10
+        "stock": 10,
+        "type": "physical",
+        "weight": 5.0
     },
     {
         "id": "P005",
         "name": "Mouse Pad",
         "price": 8.0,
-        "stock": 5
+        "stock": 5,
+        "type": "physical",
+        "weight": 0.2
+    },
+    {
+        "id": "D001",
+        "name": "Antivirus Licence",
+        "price": 59.9,
+        "stock": 100,
+        "type": "digital",
+        "download_size": 850
+    },
+    {
+        "id": "D002",
+        "name": "Photo Editor",
+        "price": 120.0,
+        "stock": 30,
+        "type": "digital",
+        "download_size": 2048
     }
 ]
