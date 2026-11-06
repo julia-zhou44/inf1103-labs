@@ -3,27 +3,35 @@ import math
 
 from file_handling import load_inventory, save_inventory
 from inventory import LINE
-from product import Product
+from physical_product import PhysicalProduct
+from digital_product import DigitalProduct
+from CanBeShipped import CanBeShipped
+
 
 def get_product_id(prompt):
     """Ask for a product ID. 'p001' and 'P001' are treated the same."""
     return input(prompt).strip().upper()
 
 
-def get_valid_price():
-    """Ask for a price. Return a float rounded to 2 decimals, or None if invalid."""
-    user_input = input("Price: ").strip()
+def get_valid_positive_float(prompt):
+    """Ask for a number 0 or more. Return a float rounded to 2 decimals, or None if invalid."""
+    user_input = input(prompt).strip()
     try:
-        price = float(user_input)
+        value = float(user_input)
     except ValueError:
-        print("Invalid price. Please enter a number.")
+        print("Invalid input. Please enter a number.")
         return None
 
-    if not math.isfinite(price) or price < 0:  # blocks negatives, 'inf' and 'nan'
-        print("Invalid price. Please enter a positive number.")
+    if not math.isfinite(value) or value < 0:  # blocks negatives, 'inf' and 'nan'
+        print("Invalid input. Please enter a positive number.")
         return None
 
-    return round(price, 2)
+    return round(value, 2)
+
+
+def get_valid_price():
+    """Ask for a price using the shared number check."""
+    return get_valid_positive_float("Price: ")
 
 
 def get_valid_stock(prompt):
@@ -61,8 +69,26 @@ def add_product_menu(inventory):
     if stock is None:
         return
 
-    product = Product(product_id, name, price, stock)  # create the object
-    inventory.add_product(product)                     # hand it to the inventory
+    print("\nProduct Type:")
+    print("1. Physical Product")
+    print("2. Digital Product")
+    choice = input("Enter type: ").strip()
+
+    if choice == "1":
+        weight = get_valid_positive_float("Weight (kg): ")
+        if weight is None:
+            return
+        product = PhysicalProduct(product_id, name, price, stock, weight)
+    elif choice == "2":
+        download_size = get_valid_positive_float("Download Size (MB): ")
+        if download_size is None:
+            return
+        product = DigitalProduct(product_id, name, price, stock, download_size)
+    else:
+        print("Invalid product type. Please enter 1 or 2.")
+        return
+
+    inventory.add_product(product)  # hand the object to the inventory
     print("\nProduct added successfully!")
 
 
@@ -97,6 +123,9 @@ def search_product_menu(inventory):
     print("\nProduct Found")
     print(LINE)
     product.display_information()
+    print(f"Fulfilment: {product.get_fulfilment_info()}")
+    if isinstance(product, CanBeShipped):  # only shippable products have a shipping cost
+        print(f"Shipping Cost: ${product.calculate_shipping_cost():.2f}")
     print(LINE)
 
 # ---------------- Menu system ----------------
@@ -117,7 +146,7 @@ def main():
     print("INVENTORY MANAGEMENT SYSTEM")
     print("=" * 37 + "\n")
 
-    inventory = load_inventory()  # list of product dictionaries
+    inventory = load_inventory()  # Inventory object holding Physical and Digital products
 
     while True:
         show_menu()
