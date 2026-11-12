@@ -25,9 +25,11 @@ def get_supplier(item: dict, suppliers: dict[str, Supplier]) -> Supplier:
         suppliers[supplier_id] = Supplier(supplier_id, data["name"], data["contact_email"])
     return suppliers[supplier_id]
 
-def load_inventory():
-    """Read inventory.json and return a filled Inventory object."""
+def load_inventory() -> Inventory:
+    """Read inventory.json and return a filled Inventory object"""
+
     inventory = Inventory()
+    suppliers: dict[str, Supplier] = {}   # products from the same supplier share ONE Supplier object
 
     if not os.path.exists(DATA_FILE):
         print("inventory.json not found. Starting with an empty inventory.")
@@ -48,15 +50,16 @@ def load_inventory():
     for item in data:
         try:
             # use the saved "type" to rebuild the correct subclass
+            supplier = get_supplier(item, suppliers)
             product_type = item.get("type")
             
             if product_type == "physical":
                 product = PhysicalProduct(item["id"], item["name"], item["price"],
-                                          item["stock"], item["weight"])
+                                          item["stock"], item["weight"], supplier)
                 
             elif product_type == "digital":
                 product = DigitalProduct(item["id"], item["name"], item["price"],
-                                         item["stock"], item["download_size"])
+                                         item["stock"], item["download_size"], supplier)
                 
             else:
                 print(f"Skipping a product with unknown type: {product_type}")
@@ -71,7 +74,7 @@ def load_inventory():
     return inventory
 
 
-def save_inventory(inventory):
+def save_inventory(inventory: Inventory) -> bool:
     """Write every product to inventory.json. Return True if it worked."""
     data = [product.to_dict() for product in inventory.get_products()]
 
