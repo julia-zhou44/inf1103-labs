@@ -28,6 +28,7 @@ class Inventory: # Manages a collection of Product object
             print("(no products in inventory)")
         for product in self.__products:
             product.display_information()
+            print()
         print(LINE)
 
     def get_products(self):

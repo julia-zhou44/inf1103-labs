@@ -49,8 +49,9 @@ def load_inventory() -> Inventory:
 
     for item in data:
         try:
-            # use the saved "type" to rebuild the correct subclass
             supplier = get_supplier(item, suppliers)
+
+            # use the saved "type" to rebuild the correct subclass
             product_type = item.get("type")
             
             if product_type == "physical":

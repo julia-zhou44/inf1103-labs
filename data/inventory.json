@@ -4,6 +4,11 @@
         "name": "Laptop",
         "price": 1200.0,
         "stock": 15,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "physical",
         "weight": 2.5
     },
@@ -12,6 +17,11 @@
         "name": "Mouse",
         "price": 25.5,
         "stock": 50,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "physical",
         "weight": 0.1
     },
@@ -20,6 +30,11 @@
         "name": "Keyboard",
         "price": 45.0,
         "stock": 25,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "physical",
         "weight": 0.8
     },
@@ -28,6 +43,11 @@
         "name": "Monitor",
         "price": 299.99,
         "stock": 10,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "physical",
         "weight": 5.0
     },
@@ -36,6 +56,11 @@
         "name": "Mouse Pad",
         "price": 8.0,
         "stock": 5,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "physical",
         "weight": 0.2
     },
@@ -44,6 +69,11 @@
         "name": "Antivirus Licence",
         "price": 59.9,
         "stock": 100,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "digital",
         "download_size": 850
     },
@@ -52,6 +82,11 @@
         "name": "Photo Editor",
         "price": 120.0,
         "stock": 30,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "digital",
         "download_size": 2048
     },
@@ -60,7 +95,25 @@
         "name": "Advertisement Blocker",
         "price": 100.0,
         "stock": 1,
+        "supplier": {
+            "supplier_id": "S000",
+            "name": "Unknown Supplier",
+            "contact_email": "-"
+        },
         "type": "digital",
         "download_size": 100.0
+    },
+    {
+        "id": "P006",
+        "name": "Speaker",
+        "price": 70.0,
+        "stock": 3,
+        "supplier": {
+            "supplier_id": "JBL INC",
+            "name": "JBL",
+            "contact_email": "jbl@gmail"
+        },
+        "type": "physical",
+        "weight": 1.0
     }
 ]
