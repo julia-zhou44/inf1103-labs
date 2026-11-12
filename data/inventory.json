@@ -54,5 +54,13 @@
         "stock": 30,
         "type": "digital",
         "download_size": 2048
+    },
+    {
+        "id": "D003",
+        "name": "Advertisement Blocker",
+        "price": 100.0,
+        "stock": 1,
+        "type": "digital",
+        "download_size": 100.0
     }
 ]
