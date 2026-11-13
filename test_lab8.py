@@ -1,9 +1,11 @@
-# test_lab8.py - 
+# test_lab8.py 
 # association, aggregation, composition, LSP, polymorphism
+
 from supplier import Supplier
 from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
+from order import Order
 
 
 def test_association() -> None:
@@ -52,6 +54,35 @@ def test_aggregation() -> None:
     print("Same object now in Inventory B:", inventory_b.find_product("P200") is mouse)
 
 
+def test_composition() -> None:
+    print("\n=== 4. COMPOSITION: Order <>-- OrderLine ===")
+    supplier = Supplier("S001", "Lenovo Pte Ltd", "sales@lenovo.com")
+    keyboard = PhysicalProduct("P300", "Keyboard", 45.00, 25, 0.8, supplier)
+    antivirus = DigitalProduct("D300", "Antivirus Licence", 59.90, 100, 850, supplier)
+
+    order1 = Order("1")
+    order1.add_order_line(keyboard, 2)
+    order1.add_order_line(antivirus, 1)
+    order1.display_order()
+
+    # Predict first: same Product in two Orders -> how many OrderLines / Products?
+    order2 = Order("2")
+    order2.add_order_line(keyboard, 5)
+    order2.display_order()
+
+    line1 = order1.get_order_lines()[0]
+    line2 = order2.get_order_lines()[0]
+    print("\nSame Product object in both lines?", line1.get_product() is line2.get_product())
+    print("Same OrderLine object?", line1 is line2)
+    print("id(keyboard):", id(keyboard), "| id(line1):", id(line1), "| id(line2):", id(line2))
+
+    order1.remove_order_line("P300")
+    print("\nAfter removing the keyboard line from O001:")
+    order1.display_order()
+    print("Keyboard Product still exists:", keyboard.get_name())
+
+
 if __name__ == "__main__":
     test_association()
     test_aggregation()
+    test_composition()
