@@ -6,7 +6,7 @@ from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
 from order import Order
-
+from product import Product
 
 def test_association() -> None:
     print("\n=== 2. ASSOCIATION: Supplier <-> Product ===")
@@ -81,8 +81,35 @@ def test_composition() -> None:
     order1.display_order()
     print("Keyboard Product still exists:", keyboard.get_name())
 
+def show_product_details(product: Product) -> None:
+    """Works with ANY Product subclass — no isinstance checks."""
+    product.display_information()
+    print(product.get_fulfilment_info())
+
+
+def test_lsp_and_polymorphism() -> None:
+    print("\n=== 6 & 7. LSP + POLYMORPHISM ===")
+    print()
+    supplier = Supplier("S003", "GainCity", "GainCity@gmail.com")
+    monitor = PhysicalProduct("P400", "Monitor", 299.99, 10, 5.0, supplier)
+    editor = DigitalProduct("D400", "Photo Editor", 120.00, 30, 2048, supplier)
+
+    print("show_product_details() called with each subclass:")
+    show_product_details(monitor)
+    show_product_details(editor)
+
+    # both work through the Inventory too, using the Product abstraction
+    inventory = Inventory()
+    inventory.add_product(monitor)
+    inventory.add_product(editor)
+
+    print("\nupdate_stock() keeps the same meaning for both subclasses:")
+    for product in inventory.get_products():
+        accepted = product.update_stock(7)
+        print(product.get_name(), "-> accepted:", accepted, "| stock now:", product.get_stock())
 
 if __name__ == "__main__":
     test_association()
     test_aggregation()
     test_composition()
+    test_lsp_and_polymorphism()
