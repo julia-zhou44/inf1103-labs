@@ -77,7 +77,7 @@ def test_composition() -> None:
     print("id(keyboard):", id(keyboard), "| id(line1):", id(line1), "| id(line2):", id(line2))
 
     order1.remove_order_line("P300")
-    print("\nAfter removing the keyboard line from O001:")
+    print("\nAfter removing the keyboard line from 1:")
     order1.display_order()
     print("Keyboard Product still exists:", keyboard.get_name())
 
