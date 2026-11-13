@@ -73,7 +73,7 @@ def add_product_menu(inventory: Inventory) -> None:
     if product_id == "":
         print("Product ID cannot be empty.")
         return
-    if inventory.search_product(product_id) is not None:  # check early so the user doesn't type everything for nothing
+    if inventory.find_product(product_id) is not None:  # check early so the user doesn't type everything for nothing
         print(f"Product ID {product_id} already exists.")
         return
 
@@ -121,7 +121,7 @@ def add_product_menu(inventory: Inventory) -> None:
 
 def update_stock_menu(inventory: Inventory) -> None:
     print("\nUpdate Stock")
-    product = inventory.search_product(get_product_id("Enter Product ID: "))
+    product = inventory.find_product(get_product_id("Enter Product ID: "))
 
     if product is None:
         print("\nProduct not found.")
@@ -141,7 +141,7 @@ def update_stock_menu(inventory: Inventory) -> None:
 
 def search_product_menu(inventory: Inventory) -> None:
     print("\nSearch Product")
-    product = inventory.search_product(get_product_id("Enter Product ID: "))
+    product = inventory.find_product(get_product_id("Enter Product ID: "))
 
     if product is None:
         print("\nProduct not found.")
@@ -150,6 +150,7 @@ def search_product_menu(inventory: Inventory) -> None:
     print("\nProduct Found")
     print(LINE)
     product.display_information()
+    print()
     product.get_supplier().display_information()
     
     print(f"Fulfilment: {product.get_fulfilment_info()}")
@@ -182,17 +183,23 @@ def main() -> None:
         option = input("\nEnter option: ").strip()
 
         if option == "1":
-            inventory.display_all()
+            inventory.display_all_products()
+
         elif option == "2":
             add_product_menu(inventory)
+
         elif option == "3":
             update_stock_menu(inventory)
+
         elif option == "4":
             search_product_menu(inventory)
+
         elif option == "5":
             print("\nSaving inventory...")
+
             if save_inventory(inventory):
                 print("Inventory saved successfully to inventory.json.")
+
         elif option == "6":
             # always save on exit so no changes are lost
             print("\nSaving inventory before exit...")
@@ -201,6 +208,7 @@ def main() -> None:
             print("\nThank you for using Inventory Management System.")
             print("Program terminated.")
             break
+        
         else:
             print("Invalid option. Please enter a number from 1 to 6.")
 

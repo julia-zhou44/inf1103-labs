@@ -107,7 +107,7 @@
         "id": "P006",
         "name": "Speaker",
         "price": 70.0,
-        "stock": 3,
+        "stock": 4,
         "supplier": {
             "supplier_id": "JBL INC",
             "name": "JBL",
