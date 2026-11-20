@@ -1,4 +1,5 @@
 # file_handling.py
+import csv
 import json
 import os
 
@@ -81,3 +82,38 @@ def save_inventory(inventory: Inventory) -> bool:
     except OSError as error:
         print(f"Could not save inventory: {error}")
         return False
+
+def load_products(path: str, inventory: Inventory, supplier: Supplier) -> None:
+    """5.2: load products from a CSV file through the ProductFactory.
+    A missing file is reported without crashing; each bad row is reported and skipped."""
+    try:
+        file = open(path, newline="")
+    except FileNotFoundError:
+        print(f"Products file not found: {path}")
+    else:
+        # only runs if the file opened successfully
+        with file:
+            reader = csv.reader(file)
+            next(reader, None)          # skip the header row
+            loaded = 0
+
+            for line_number, row in enumerate(reader, start=2):   # line 1 is the header
+                try:
+                    product_type, product_id, name, price, stock = row
+                    product = ProductFactory.create(product_type, product_id, name,
+                                                    float(price), int(stock), supplier)
+                except ValueError as error:
+                    # unknown type, text where a number should be, wrong number of columns,
+                    # or a value that breaks Product's validation
+                    print(f"Skipping line {line_number}: {error}")
+                    continue
+
+                if inventory.add_product(product):
+                    loaded += 1
+                else:
+                    print(f"Skipping line {line_number}: product ID {product_id} already exists.")
+
+            print(f"{loaded} products loaded.")
+    finally:
+        # always runs - file found or not
+        print("Load attempt finished.")

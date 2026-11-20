@@ -17,36 +17,33 @@ def get_product_id(prompt: str) -> str:
     return input(prompt).strip().upper()
 
 
-def get_valid_positive_float(prompt: str) -> float | None:
-    """Ask for a number 0 or more. Return a float rounded to 2 decimals, or None if invalid."""
-    user_input = input(prompt).strip()
-    try:
-        value = float(user_input)
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-        return None
+def get_positive_float(prompt: str) -> float:
+    """Keep asking until the user enters a number greater than zero (Section 5.1)
+    float() raises ValueError for text like 'abc', so that is caught and the user is asked again"""
 
-    if not math.isfinite(value) or value < 0:  # blocks negatives, inf & nan
-        print("Invalid input. Please enter a positive number.")
-        return None
-
-    return round(value, 2)
-
-
-def get_valid_price() -> float | None:
-    """Ask for a price using the shared number check."""
-    return get_valid_positive_float("Price: ")
+    while True:
+        try:
+            value = float(input(prompt))
+            if not math.isfinite(value) or value <= 0:   # also blocks 'inf' and 'nan'
+                print("Please enter a number greater than zero.")
+                continue
+            return round(value, 2)
+        except ValueError:
+            print("Please enter a valid number, e.g. 12.50")
 
 
-def get_valid_stock(prompt: str) -> int | None:
-    """Ask for a stock quantity. Return a whole number 0 or more, or None if invalid."""
-    user_input = input(prompt).strip()
+def get_non_negative_int(prompt: str) -> int:
+    """Keep asking until the user enters a whole number 0 or more (used for stock)"""
+    while True:
+        try:
+            value = int(input(prompt))
+            if value < 0:
+                print("Please enter a whole number 0 or more.")
+                continue
+            return value
+        except ValueError:
+            print("Please enter a whole number, e.g. 10")
 
-    if not user_input.isdigit():  # rejects letters, decimals and negative signs
-        print("Invalid quantity. Please enter a whole number (0 or more).")
-        return None
-
-    return int(user_input)
 
 def get_supplier_for_product(inventory: Inventory) -> Supplier | None:
     """Ask for a supplier ID. Reuse the existing Supplier object if one already supplies a product """
@@ -86,13 +83,8 @@ def add_product_menu(inventory: Inventory) -> None:
         print("Product name cannot be empty.")
         return
 
-    price = get_valid_price()
-    if price is None:
-        return
-
-    stock = get_valid_stock("Stock Quantity: ")
-    if stock is None:
-        return
+    price = get_positive_float("Price: ")              
+    stock = get_non_negative_int("Stock Quantity: ")   # keeps asking until valid
 
     supplier = get_supplier_for_product(inventory)   
     if supplier is None:                             
@@ -109,9 +101,7 @@ def add_product_menu(inventory: Inventory) -> None:
         return
     product_type, extra_prompt = option
 
-    extra_value = get_valid_positive_float(extra_prompt)
-    if extra_value is None:
-        return
+    extra_value = get_positive_float(extra_prompt)
 
     try:
         product = ProductFactory.create(product_type, product_id, name, price,
@@ -136,9 +126,7 @@ def update_stock_menu(inventory: Inventory) -> None:
     print(f"Name: {product.get_name()}")
     print(f"Current Stock: {product.get_stock()}\n")
 
-    new_stock = get_valid_stock("New Stock Quantity: ")
-    if new_stock is None:
-        return
+    new_stock = get_non_negative_int("New Stock Quantity: ")
 
     try:
         product.update_stock(new_stock)  # the Product checks and changes its own stock
