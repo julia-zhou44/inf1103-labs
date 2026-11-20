@@ -3,8 +3,7 @@ import json
 import os
 
 from inventory import Inventory
-from physical_product import PhysicalProduct
-from digital_product import DigitalProduct
+from product_factory import ProductFactory
 from supplier import Supplier
 
 DATA_DIR = "data"
@@ -51,21 +50,16 @@ def load_inventory() -> Inventory:
         try:
             supplier = get_supplier(item, suppliers)
 
-            # use the saved "type" to rebuild the correct subclass
-            product_type = item.get("type")
+            # the factory turns the saved type back into the correct subclass
+            # weight or download size is whichever one was saved for this product
             
-            if product_type == "physical":
-                product = PhysicalProduct(item["id"], item["name"], item["price"],
-                                          item["stock"], item["weight"], supplier)
-                
-            elif product_type == "digital":
-                product = DigitalProduct(item["id"], item["name"], item["price"],
-                                         item["stock"], item["download_size"], supplier)
-                
-            else:
-                print(f"Skipping a product with unknown type: {product_type}")
-                continue
-        
+            extra_value = item.get("weight", item.get("download_size", 0.0))
+            product = ProductFactory.create(item.get("type"), item["id"], item["name"],
+                                            item["price"], item["stock"], supplier, extra_value)
+
+        except ValueError as error:     # unknown product type
+            print(f"Skipping a product: {error}")
+            continue
         except (KeyError, TypeError, AttributeError):
             print("Skipping a product with missing details.")
             continue

@@ -3,10 +3,15 @@ import math
 
 from file_handling import load_inventory, save_inventory
 from inventory import Inventory, LINE
-from physical_product import PhysicalProduct
-from digital_product import DigitalProduct
-from CanBeShipped import CanBeShipped
+from product_factory import ProductFactory
 from supplier import Supplier
+
+# menu choice ->(type name for the factory, prompt for that type's extra value)
+# adding a new product type means adding one line here, not a new elif
+PRODUCT_TYPE_OPTIONS: dict[str, tuple[str, str]] = {
+    "1": ("physical", "Weight (kg): "),
+    "2": ("digital", "Download Size (MB): "),
+}
 
 def get_product_id(prompt: str) -> str:
     """Ask for a product ID. 'p001' and 'P001' are treated the same."""
@@ -99,20 +104,21 @@ def add_product_menu(inventory: Inventory) -> None:
     print("2. Digital Product")
     choice = input("Enter type: ").strip()
 
-    if choice == "1":
-        weight = get_valid_positive_float("Weight (kg): ")
-        if weight is None:
-            return
-        product = PhysicalProduct(product_id, name, price, stock, weight, supplier)
-        
-    elif choice == "2":
-        download_size = get_valid_positive_float("Download Size (MB): ")
-        if download_size is None:
-            return
-        product = DigitalProduct(product_id, name, price, stock, download_size, supplier)
-
-    else:
+    option = PRODUCT_TYPE_OPTIONS.get(choice)
+    if option is None:
         print("Invalid product type. Please enter 1 or 2.")
+        return
+    product_type, extra_prompt = option
+
+    extra_value = get_valid_positive_float(extra_prompt)
+    if extra_value is None:
+        return
+
+    try:
+        product = ProductFactory.create(product_type, product_id, name, price,
+                                        stock, supplier, extra_value)
+    except ValueError as error:
+        print(f"Could not create product: {error}")
         return
 
     inventory.add_product(product)  # hand the object to the inventory
@@ -153,9 +159,7 @@ def search_product_menu(inventory: Inventory) -> None:
     print()
     product.get_supplier().display_information()
     
-    print(f"Fulfilment: {product.get_fulfilment_info()}")
-    if isinstance(product, CanBeShipped):  # only shippable products have a shipping cost
-        print(f"Shipping Cost: ${product.calculate_shipping_cost():.2f}")
+    print(f"Fulfilment: {product.get_fulfilment_info()}")  # each product type describes itself
     print(LINE)
 
 # ---------------- Menu system ----------------

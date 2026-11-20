@@ -22,7 +22,8 @@ class PhysicalProduct(Product, CanBeShipped):
         return round(5.00 + 2.00 * self.__weight, 2)   # $5 base + $2 per kg
 
     def get_fulfilment_info(self) -> str:
-        return "Requires physical shipping."
+        # includes the shipping cost, so callers never need to check if a product can be shipped
+        return f"Requires physical shipping. Shipping cost: ${self.calculate_shipping_cost():.2f}"
 
     def to_dict(self) -> dict:
         """Add the type and weight to the parent's dictionary (used when saving to JSON)."""
