@@ -1,4 +1,4 @@
 FROM python:3.11-slim
 WORKDIR /app
 COPY . .
-CMD ["python", "test_lab8.py"]
+CMD ["python", "-m", "unittest", "discover", "-s", "tests", "-v"]
