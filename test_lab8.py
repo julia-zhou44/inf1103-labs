@@ -1,5 +1,7 @@
 # test_lab8.py 
 # association, aggregation, composition, LSP, polymorphism
+
+import inventory
 from supplier import Supplier
 from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
@@ -54,7 +56,7 @@ def test_aggregation() -> None:
 
 
 def test_composition() -> None:
-    print("\n=== 4. COMPOSITION: Order *-- OrderLine ===")
+    print("\n=== 4. COMPOSITION: Order <>-- OrderLine ===")
     supplier = Supplier("S001", "Lenovo Pte Ltd", "sales@lenovo.com")
     keyboard = PhysicalProduct("P300", "Keyboard", 45.00, 25, 0.8, supplier)
     antivirus = DigitalProduct("D300", "Antivirus Licence", 59.90, 100, 850, supplier)
@@ -64,7 +66,7 @@ def test_composition() -> None:
     order1.add_order_line(antivirus, 1)
     order1.display_order()
 
-    # Predict first: same Product in two Orders -> how many OrderLines / Products?
+    # predict first part
     order2 = Order("2")
     order2.add_order_line(keyboard, 5)
     order2.display_order()
@@ -104,8 +106,8 @@ def test_lsp_and_polymorphism() -> None:
 
     print("\nupdate_stock() keeps the same meaning for both subclasses:")
     for product in inventory.get_products():
-        accepted = product.update_stock(7)
-        print(product.get_name(), "-> accepted:", accepted, "| stock now:", product.get_stock())
+        product.update_stock(7)
+        print(product.get_name(), "-> stock now:", product.get_stock())
 
     print("\nPolymorphism through the Inventory:")
     for product in inventory.get_products():

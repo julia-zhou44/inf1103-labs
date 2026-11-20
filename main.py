@@ -6,8 +6,7 @@ from inventory import Inventory, LINE
 from product_factory import ProductFactory
 from supplier import Supplier
 
-# menu choice ->(type name for the factory, prompt for that type's extra value)
-# adding a new product type means adding one line here, not a new elif
+# menu choice -> (type name for the factory, prompt for that type's extra value)
 PRODUCT_TYPE_OPTIONS: dict[str, tuple[str, str]] = {
     "1": ("physical", "Weight (kg): "),
     "2": ("digital", "Download Size (MB): "),
@@ -27,7 +26,7 @@ def get_valid_positive_float(prompt: str) -> float | None:
         print("Invalid input. Please enter a number.")
         return None
 
-    if not math.isfinite(value) or value < 0:  # blocks negatives, 'inf' and 'nan'
+    if not math.isfinite(value) or value < 0:  # blocks negatives, inf & nan
         print("Invalid input. Please enter a positive number.")
         return None
 
@@ -141,8 +140,12 @@ def update_stock_menu(inventory: Inventory) -> None:
     if new_stock is None:
         return
 
-    if product.update_stock(new_stock):  # the Product changes its own stock
-        print("\nStock updated successfully!")
+    try:
+        product.update_stock(new_stock)  # the Product checks and changes its own stock
+    except ValueError as error:
+        print(f"\nCould not update stock: {error}")
+        return
+    print("\nStock updated successfully!")
 
 
 def search_product_menu(inventory: Inventory) -> None:

@@ -8,6 +8,10 @@ class OrderLine:
     """One product + quantity inside an Order. Only Order should create these (composition)"""
 
     def __init__(self, product: Product, quantity: int) -> None:
+        # validation: orderLine protects its own rule, so no caller can create a bad line
+        if not isinstance(quantity, int) or quantity <= 0:
+            raise ValueError("Quantity must be a whole number greater than zero.")
+
         self.__product: Product = product      # association: refers to the Product, does not own it
         self.__quantity: int = quantity
 
@@ -28,12 +32,12 @@ class OrderLine:
 class Order:
     """Composition: an Order creates, owns and removes its own OrderLine objects.
     Strategy: the Order is GIVEN a DiscountStrategy and just calls apply() on it,
-    so there is no if/elif about discount types in this class."""
+    so there is no if/elif about discount types in this class"""
 
     def __init__(self, order_id: str, discount: DiscountStrategy | None = None) -> None:
         self.__order_id: str = order_id
         self.__order_lines: list[OrderLine] = []
-        # use None as the default, not NoDiscount(), so each order gets its own object
+        # use None as the default, not NoDiscount() so each order gets its own object
         self.__discount: DiscountStrategy = discount if discount is not None else NoDiscount()
 
     def get_order_id(self) -> str:
@@ -44,7 +48,8 @@ class Order:
         self.__discount = discount
 
     def add_order_line(self, product: Product, quantity: int) -> None:
-        order_line = OrderLine(product, quantity)   # the Order creates the part itself
+        """Raises ValueError if the quantity is invalid (checked by OrderLine)."""
+        order_line = OrderLine(product, quantity)   # the order creates the part itself
         self.__order_lines.append(order_line)
 
     def remove_order_line(self, product_id: str) -> bool:

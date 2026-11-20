@@ -50,14 +50,13 @@ def load_inventory() -> Inventory:
         try:
             supplier = get_supplier(item, suppliers)
 
-            # the factory turns the saved type back into the correct subclass
-            # weight or download size is whichever one was saved for this product
-            
+            # the factory turns the saved "type" back into the correct subclass;
+            # weight or download_size is whichever one was saved for this product
             extra_value = item.get("weight", item.get("download_size", 0.0))
             product = ProductFactory.create(item.get("type"), item["id"], item["name"],
                                             item["price"], item["stock"], supplier, extra_value)
 
-        except ValueError as error:     # unknown product type
+        except ValueError as error:     # unknown type, or a price/stock that breaks the rules
             print(f"Skipping a product: {error}")
             continue
         except (KeyError, TypeError, AttributeError):

@@ -7,6 +7,11 @@ from supplier import Supplier
 class Product(ABC):
 
     def __init__(self, product_id: str, name: str, price: float, stock: int, supplier: Supplier):
+        # validation: Product owns these rules, so every subclass gets them automatically
+        if not isinstance(price, (int, float)) or price <= 0:
+            raise ValueError("Price must be a number greater than zero.")
+        self._validate_stock(stock)
+
         self.__product_id: str = product_id
         self.__name: str = name
         self.__price: float = price
@@ -31,12 +36,16 @@ class Product(ABC):
         return self.__supplier
 
 
-    def update_stock(self, quantity: int) -> bool: #
-        """Replace the stock. Return True if accepted, False if invalid"""
+    @staticmethod
+    def _validate_stock(quantity: int) -> None:
+        """Shared stock rule, used by __init__ and update_stock. Raises ValueError if broken."""
         if not isinstance(quantity, int) or quantity < 0:
-            return False
+            raise ValueError("Stock quantity must be a whole number (0 or more).")
+
+    def update_stock(self, quantity: int) -> None:
+        """Replace the stock. Raises ValueError if the quantity is invalid."""
+        self._validate_stock(quantity)
         self.__stock = quantity
-        return True
 
     def display_information(self) -> None:
         print(f"ID: {self.__product_id} | Name: {self.__name} | "
